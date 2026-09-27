@@ -176,6 +176,44 @@ body {
   border-color: var(--accent);
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Mobile menu toggle — inert on desktop/tablet (see ≤768px block) */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.nav-toggle-bar {
+  display: block;
+  width: 15px;
+  height: 1.5px;
+  background: var(--text-primary);
+  transition: transform 0.25s ease;
+}
+
+.nav-toggle.is-open .nav-toggle-bar:first-child {
+  transform: translateY(3.25px) rotate(45deg);
+}
+
+.nav-toggle.is-open .nav-toggle-bar:last-child {
+  transform: translateY(-3.25px) rotate(-45deg);
+}
+
 /* ══════════════════════════════════════════════
    BUTTONS
 ══════════════════════════════════════════════ */
@@ -1992,11 +2030,89 @@ body {
   }
 
   .nav {
-    padding: 0 1.5rem;
+    padding: 0 1.25rem;
+  }
+
+  .nav-brand-bowtie {
+    width: 30px;
+  }
+
+  .nav-brand-label {
+    font-size: 0.92rem;
+    letter-spacing: 0.1em;
+  }
+
+  .nav-actions {
+    gap: 0.5rem;
+  }
+
+  .nav-cta {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.68rem;
+  }
+
+  /* Mobile navigation — compact dropdown reusing the existing .nav-links list */
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .nav.menu-open {
+    background: rgba(5, 5, 5, 0.97);
+    border-bottom-color: transparent;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
   }
 
   .nav-links {
-    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.25rem 0 0.5rem;
+    background: rgba(5, 5, 5, 0.97);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    max-height: calc(100vh - 72px);
+    max-height: calc(100dvh - 72px);
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s ease;
+  }
+
+  .nav-links.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .nav-links li + li {
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 0.95rem 1.25rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* Hero mobile — poster de espera (frame 0) no lugar da área preta */
+  .hero-pinned-viewport,
+  .hero-video {
+    background-color: var(--bg-base);
+    background-image: url('/corvette_scroll_poster.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
   .hero-editorial-zone {
@@ -2064,6 +2180,35 @@ body {
 
   .z51-macro-image {
     aspect-ratio: 16/9;
+  }
+
+  /* Mobile: badge Z51 compacta — preserva a leitura da imagem */
+  .z51-badge-overlay {
+    left: 0.75rem;
+    right: auto;
+    bottom: 0.75rem;
+    max-width: calc(100% - 1.5rem);
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.6rem;
+    padding: 0.5rem 0.85rem;
+    background: rgba(10, 10, 10, 0.6);
+    border-color: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .z51-badge-title {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+
+  .z51-badge-sub {
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    line-height: 1.3;
   }
 
   .lt2-numbers {

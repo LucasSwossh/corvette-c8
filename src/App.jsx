@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
@@ -120,6 +120,7 @@ function RevealImage({ src, alt, className = 'section-image', direction = 'right
 ────────────────────────────────────────────── */
 function Nav() {
   const navRef = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -129,8 +130,33 @@ function Nav() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  /* Compact mobile menu — closes on Esc, outside tap or returning to desktop */
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    const onPointerDown = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) setMenuOpen(false);
+    };
+    const onResize = () => {
+      if (window.innerWidth > 768) setMenuOpen(false);
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('resize', onResize);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('resize', onResize);
+    };
+  }, [menuOpen]);
+
   const scrollToSection = (e, targetId) => {
     e.preventDefault();
+    setMenuOpen(false);
     const el = document.getElementById(targetId);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
@@ -138,7 +164,7 @@ function Nav() {
   };
 
   return (
-    <nav ref={navRef} className="nav" role="navigation" aria-label="Navegação principal">
+    <nav ref={navRef} className={`nav${menuOpen ? ' menu-open' : ''}`} role="navigation" aria-label="Navegação principal">
       <div className="nav-inner">
         <a href="#hero" className="nav-brand" aria-label="Chevrolet Corvette">
           <img
@@ -149,7 +175,7 @@ function Nav() {
           />
           <span className="nav-brand-label">Corvette C8</span>
         </a>
-        <ul className="nav-links">
+        <ul id="nav-menu" className={`nav-links${menuOpen ? ' open' : ''}`}>
           <li><a href="#ruptura" onClick={(e) => scrollToSection(e, 'ruptura')}>A Ruptura</a></li>
           <li><a href="#estrutura" onClick={(e) => scrollToSection(e, 'estrutura')}>Estrutura</a></li>
           <li><a href="#lt2" onClick={(e) => scrollToSection(e, 'lt2')}>O LT2</a></li>
@@ -159,14 +185,27 @@ function Nav() {
           <li><a href="#z51" onClick={(e) => scrollToSection(e, 'z51')}>Pacote Z51</a></li>
           <li><a href="#configuracoes" onClick={(e) => scrollToSection(e, 'configuracoes')}>Configurações</a></li>
         </ul>
-        <a
-          id="nav-explore-cta"
-          className="nav-cta"
-          href="#ruptura"
-          onClick={(e) => scrollToSection(e, 'ruptura')}
-        >
-          Explorar C8
-        </a>
+        <div className="nav-actions">
+          <a
+            id="nav-explore-cta"
+            className="nav-cta"
+            href="#ruptura"
+            onClick={(e) => scrollToSection(e, 'ruptura')}
+          >
+            Explorar C8
+          </a>
+          <button
+            type="button"
+            className={`nav-toggle${menuOpen ? ' is-open' : ''}`}
+            aria-label={menuOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
+            aria-expanded={menuOpen}
+            aria-controls="nav-menu"
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            <span className="nav-toggle-bar" />
+            <span className="nav-toggle-bar" />
+          </button>
+        </div>
       </div>
     </nav>
   );
