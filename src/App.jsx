@@ -393,7 +393,7 @@ function Hero() {
         <video
           ref={videoRef}
           className="hero-video"
-          src="/corvette_scroll_5s.mp4"
+          src="/corvette_scroll.mp4"
           muted
           playsInline
           preload="auto"
