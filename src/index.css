@@ -1730,7 +1730,7 @@ body {
 .closing-bg {
   position: absolute;
   inset: 0;
-  background-image: url('/hero.jpg');
+  background-image: url('/chassis.png');
   background-size: cover;
   background-position: center 40%;
   opacity: 0.14;
@@ -1846,6 +1846,92 @@ body {
   color: var(--text-muted);
   line-height: 1.65;
   max-width: 820px;
+}
+
+/* ══════════════════════════════════════════════
+   EDITORIAL SIGNATURE (final authorship)
+══════════════════════════════════════════════ */
+.sig-block {
+  padding: 3.25rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.sig-block:first-child {
+  padding-top: 1.25rem;
+}
+
+.sig-block-last {
+  border-bottom: none;
+  padding-bottom: 0.5rem;
+}
+
+.sig-label {
+  display: block;
+  font-size: 0.70rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+
+.sig-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  line-height: 1.02;
+  margin-bottom: 1.4rem;
+}
+
+.sig-text {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  max-width: 660px;
+  margin-bottom: 1.1rem;
+}
+
+.sig-text:last-child {
+  margin-bottom: 0;
+}
+
+.sig-muted {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.sig-socials {
+  display: flex;
+  align-items: center;
+  gap: 2.75rem;
+  flex-wrap: wrap;
+}
+
+.sig-social {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.25s;
+}
+
+.sig-social svg {
+  color: var(--text-muted);
+  transition: color 0.25s;
+}
+
+.sig-social:hover {
+  color: var(--text-primary);
+}
+
+.sig-social:hover svg {
+  color: var(--accent);
 }
 
 /* ══════════════════════════════════════════════

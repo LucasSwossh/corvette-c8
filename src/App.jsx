@@ -15,6 +15,8 @@ import {
   Waves,
   MonitorPlay,
   ArrowUp,
+  InstagramLogo,
+  TiktokLogo,
 } from '@phosphor-icons/react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -391,7 +393,7 @@ function Hero() {
         <video
           ref={videoRef}
           className="hero-video"
-          src="/corvette_scroll.mp4"
+          src="/corvette_scroll_5s.mp4"
           muted
           playsInline
           preload="auto"
@@ -1269,41 +1271,74 @@ function ClosingSection() {
    FOOTER
 ────────────────────────────────────────────── */
 function Footer() {
-  const scrollTo = (e, id) => {
-    e.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <footer className="footer">
       <div className="container">
-        <div className="footer-inner">
-          <div className="footer-brand">
-            <img
-              src="https://www.chevrolet.com/content/dam/chevrolet/na/us/english/portable-nav/chevrolet-bowtie-120.svg"
-              alt="Logo Chevrolet"
-              width="40"
-            />
-            <span className="footer-brand-name">Chevrolet Corvette C8</span>
-          </div>
-          <ul className="footer-links">
-            <li><a href="#hero" onClick={(e) => scrollTo(e, 'hero')}>Visão Geral</a></li>
-            <li><a href="#ruptura" onClick={(e) => scrollTo(e, 'ruptura')}>A Ruptura</a></li>
-            <li><a href="#estrutura" onClick={(e) => scrollTo(e, 'estrutura')}>Estrutura</a></li>
-            <li><a href="#lt2" onClick={(e) => scrollTo(e, 'lt2')}>O LT2</a></li>
-            <li><a href="#performance" onClick={(e) => scrollTo(e, 'performance')}>Dinâmica</a></li>
-            <li><a href="#aerodinamica" onClick={(e) => scrollTo(e, 'aerodinamica')}>Design &amp; Ar</a></li>
-            <li><a href="#cockpit" onClick={(e) => scrollTo(e, 'cockpit')}>O Piloto</a></li>
-            <li><a href="#z51" onClick={(e) => scrollTo(e, 'z51')}>Pacote Z51</a></li>
-            <li><a href="#configuracoes" onClick={(e) => scrollTo(e, 'configuracoes')}>Configurações</a></li>
-          </ul>
+        <div className="sig-block">
+          <span className="sig-label">Epílogo / Assinatura</span>
+          <h3 className="sig-title">Conceived, Designed &amp; Developed by Lucas</h3>
+          <p className="sig-text">
+            Uma experiência editorial e documental independente dedicada à engenharia, ao design
+            e à evolução do Chevrolet Corvette C8 Stingray.
+          </p>
         </div>
-        <p className="footer-legal">
-          *Experiência editorial e documental independente sobre a engenharia e o design do Chevrolet Corvette C8 Stingray.
-          Especificações técnicas oficiais de homologação da General Motors para o modelo com motor LT2 6.2L V8 e pacote de performance Z51.
-          Corvette® e Chevrolet® são marcas registradas da General Motors Company. Imagens e vídeos de arquivo proprietários.
-          &copy; {new Date().getFullYear()} Todos os direitos reservados.
-        </p>
+
+        <div className="sig-block">
+          <span className="sig-label">Sobre o Projeto</span>
+          <p className="sig-text">
+            Este projeto foi concebido como uma experiência digital imersiva, combinando narrativa editorial,
+            direção visual, animação, interação e tecnologia para apresentar a arquitetura, o conjunto motriz,
+            a dinâmica, a aerodinâmica, o cockpit e o pacote de performance Z51 do Corvette C8.
+          </p>
+        </div>
+
+        <div className="sig-block">
+          <span className="sig-label">Autoria &amp; Independência</span>
+          <p className="sig-text">
+            Este é um projeto independente, sem afiliação, patrocínio ou representação oficial
+            da General Motors ou da Chevrolet.
+          </p>
+          <p className="sig-text">
+            As informações técnicas apresentadas têm caráter editorial e foram baseadas em materiais
+            e especificações públicas do modelo.
+          </p>
+          <p className="sig-text sig-muted">
+            Chevrolet® e Corvette® são marcas registradas da General Motors Company.
+          </p>
+        </div>
+
+        <div className="sig-block">
+          <span className="sig-label">Conecte-se</span>
+          <div className="sig-socials">
+            <a
+              className="sig-social"
+              href="https://www.instagram.com/im.lucasz/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <InstagramLogo size={22} weight="regular" />
+              <span>@im.lucasz</span>
+            </a>
+            <a
+              className="sig-social"
+              href="https://www.tiktok.com/@im.lucaszs"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <TiktokLogo size={22} weight="regular" />
+              <span>@im.lucaszs</span>
+            </a>
+          </div>
+        </div>
+
+        <div className="sig-block sig-block-last">
+          <span className="sig-label">Crédito Final</span>
+          <p className="sig-text">Projeto, direção visual e desenvolvimento: Lucas — © 2026</p>
+          <p className="sig-text sig-muted">
+            Todos os direitos reservados quanto ao design, código, identidade visual, textos editoriais
+            e elementos originais desenvolvidos especificamente para este projeto.
+          </p>
+        </div>
       </div>
     </footer>
   );
