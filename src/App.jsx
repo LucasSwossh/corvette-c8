@@ -216,6 +216,25 @@ function Nav() {
    01 — HERO (SCROLL-DRIVEN CORVETTE DECONSTRUCTION)
    6 Cinematic Contextual Information States
 ────────────────────────────────────────────── */
+
+/* ──────────────────────────────────────────────
+   COREOGRAFIA EDITORIAL — ancorada nos eventos reais
+   do vídeo de 5,1667 s (124 frames @ 24 fps):
+
+     t 0,00–0,55 s  carro intacto      → S1 apresenta o objeto
+     t 0,60–2,30 s  desconstrução      → S2 (início) · S3 (meio)
+     t ~2,33 s      pico de movimento  → S4, arquitetura evidente
+     t ~3,33 s      separação máxima   → S5 explica a separação
+     t 4,10–5,17 s  composição final   → S6 conclui (clímax)
+
+   p desses eventos (mapeamento HERO_TIME_MAP):
+     0,15 = 0,45 s · 0,43 = 2,24 s · 0,61 = 3,39 s · 0,72 = 4,15 s
+
+   range = [enterStart, peakStart, peakEnd, exitEnd]
+   As janelas de pico carregam a narrativa: cada uma cai
+   dentro do evento visual que o texto descreve — e S4/S5
+   ainda contêm os instantes-chave de 2,33 s e 3,33 s.
+────────────────────────────────────────────── */
 const HERO_STATES = [
   {
     id: 'state-01',
@@ -223,35 +242,35 @@ const HERO_STATES = [
     title: 'CORVETTE C8',
     tagline: 'O ÍCONE, REIMAGINADO.',
     desc: 'Uma nova interpretação do Corvette, combinando design, tecnologia e uma arquitetura de motor central-traseira.',
-    range: [0.00, 0.00, 0.08, 0.16],
+    range: [0.00, 0.00, 0.13, 0.17],
   },
   {
     id: 'state-02',
     phase: 'AERODINÂMICA',
     title: 'AERODINÂMICA ESCULPIDA',
     desc: 'Cada superfície do Corvette combina presença visual com uma função dentro do conjunto aerodinâmico.',
-    range: [0.14, 0.20, 0.29, 0.35],
+    range: [0.15, 0.19, 0.24, 0.28],
   },
   {
     id: 'state-03',
     phase: 'COCKPIT',
     title: 'TUDO AO REDOR DO MOTORISTA',
     desc: 'O cockpit do C8 coloca o motorista no centro da experiência, com comandos, instrumentos e elementos da cabine orientados para quem está ao volante.',
-    range: [0.33, 0.39, 0.49, 0.55],
+    range: [0.26, 0.30, 0.38, 0.43],
   },
   {
     id: 'state-04',
     phase: 'MID-ENGINE',
     title: 'O MOTOR MUDOU DE LUGAR',
     desc: 'Uma das maiores mudanças do C8 está em sua arquitetura: o conjunto motriz passou para uma posição central-traseira, alterando a distribuição de massa e a dinâmica do carro.',
-    range: [0.53, 0.59, 0.69, 0.75],
+    range: [0.39, 0.43, 0.49, 0.54],
   },
   {
     id: 'state-05',
     phase: 'EXPLODED ARCHITECTURE',
     title: 'CADA COMPONENTE TEM UM PAPEL',
     desc: 'Chassi, motor, suspensão, rodas, cabine e carroceria revelam como diferentes sistemas trabalham juntos para formar o Corvette C8.',
-    range: [0.73, 0.79, 0.87, 0.92],
+    range: [0.51, 0.54, 0.61, 0.68],
   },
   {
     id: 'state-06',
@@ -260,7 +279,7 @@ const HERO_STATES = [
     tagline: 'DESCONSTRUÍDO ATÉ SUA ESSÊNCIA.',
     desc: 'ENGINEERING • DESIGN • PERFORMANCE',
     isMinimal: true,
-    range: [0.90, 0.95, 1.00, 1.10],
+    range: [0.64, 0.72, 1.00, 1.08],
   },
 ];
 
@@ -298,6 +317,53 @@ function getStateStyle(p, [enterStart, peakStart, peakEnd, exitEnd]) {
     };
   }
   return { opacity: 0, y: -22, blur: 8, pointerEvents: 'none', visibility: 'hidden' };
+}
+
+/* ──────────────────────────────────────────────
+   HERO 2.0 — COREOGRAFIA (mapeamento piecewise)
+   progresso do ScrollTrigger → tempo do vídeo (s)
+
+   Ancorado na curva de movimento real de
+   corvette_scroll_5s_scrub.mp4 (124 frames / 5.1667 s):
+     • 0.00–0.55 s  carro intacto / estável (introdução)
+     • 0.60–2.30 s  desconstrução principal
+     • ~2.33 s      pico de movimento global
+     • ~3.33 s      maior separação dos componentes
+     • 4.10–5.13 s  imagem praticamente estática
+────────────────────────────────────────────── */
+const HERO_TIME_MAP = {
+  INTRO_END: 0.08, // p 0.00–0.08 → t 0.00   (hold no primeiro frame)
+  MAIN_END:  0.62, // p 0.08–0.62 → t 0.00 → 3.45 (desconstrução principal)
+  SEP_END:   1.00, // p 0.62–0.86 → t 3.45 → 5.13 (separação final)
+  MAIN_TIME: 3.45,
+  SEP_TIME:  5.13, // p 0.86–1.00 → t 5.13   (estado final estável)
+};
+
+/**
+ * Converte o progresso do Hero (0..1) no tempo do vídeo, por faixas.
+ * Função pura de `p` — scroll para cima e para baixo percorrem a mesma curva.
+ */
+function heroProgressToTime(p, duration) {
+  const maxTime = Math.max(0, duration - 0.04); // nunca busca exatamente no fim
+  const { INTRO_END, MAIN_END, SEP_END, MAIN_TIME, SEP_TIME } = HERO_TIME_MAP;
+
+  // Faixa 1 — introdução: primeiro frame estável.
+  if (p <= INTRO_END) return 0;
+
+  // Faixa 2 — desconstrução principal: 0.00 → 3.45 s.
+  if (p <= MAIN_END) {
+    const k = (p - INTRO_END) / (MAIN_END - INTRO_END);
+    return Math.min(k * MAIN_TIME, maxTime);
+  }
+
+  // Faixa 3 — separação final: 3.45 → 5.13 s.
+  if (p <= SEP_END) {
+    const k = (p - MAIN_END) / (SEP_END - MAIN_END);
+    return Math.min(MAIN_TIME + k * (SEP_TIME - MAIN_TIME), maxTime);
+  }
+
+  // Faixa 4 — estado final: imagem estática até o fim do pin.
+  return Math.min(SEP_TIME, maxTime);
 }
 
 /** Asset frame rate (see process_video.ps1) — used by the scrubbing engine. */
@@ -354,14 +420,10 @@ function Hero() {
 
         /* Seek video with stable dwell at final frame — delegated to the
            scrubber: coalesced seeks, readiness gating, never two in flight.
-           The progress → time mapping is identical to the approved desktop. */
+           Hero 2.0: mapeamento piecewise (ver HERO_TIME_MAP). */
         const dur = scrubber.getDuration();
         if (dur > 0) {
-          const maxVideoTime = Math.max(0, dur - 0.04);
-          // Video completes its deconstruction at 92% scroll,
-          // remaining stable and steady through 100% for full exploded viewing.
-          const videoProgress = Math.min(1, p / 0.92);
-          const targetTime = videoProgress * maxVideoTime;
+          const targetTime = heroProgressToTime(p, dur);
           if (isFinite(targetTime)) scrubber.setTarget(targetTime);
         }
 
@@ -376,11 +438,11 @@ function Hero() {
         }
         if (phaseTextRef.current) {
           phaseTextRef.current.textContent =
-            p < 0.15 ? 'VISÃO GERAL' :
-            p < 0.34 ? 'AERODINÂMICA' :
-            p < 0.54 ? 'COCKPIT' :
-            p < 0.74 ? 'MID-ENGINE' :
-            p < 0.91 ? 'EXPLODED ARCHITECTURE' :
+            p < 0.17 ? 'VISÃO GERAL' :
+            p < 0.27 ? 'AERODINÂMICA' :
+            p < 0.42 ? 'COCKPIT' :
+            p < 0.53 ? 'MID-ENGINE' :
+            p < 0.68 ? 'EXPLODED ARCHITECTURE' :
                        'FULL EXPLODED VIEW';
         }
 
