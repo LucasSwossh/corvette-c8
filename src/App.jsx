@@ -18,6 +18,7 @@ import {
   InstagramLogo,
   TiktokLogo,
 } from '@phosphor-icons/react';
+import useVideoScrubber from './useVideoScrubber.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -299,6 +300,9 @@ function getStateStyle(p, [enterStart, peakStart, peakEnd, exitEnd]) {
   return { opacity: 0, y: -22, blur: 8, pointerEvents: 'none', visibility: 'hidden' };
 }
 
+/** Asset frame rate (see process_video.ps1) — used by the scrubbing engine. */
+const VIDEO_FPS = 24;
+
 function Hero() {
   const containerRef = useRef(null);
   const pinnedRef    = useRef(null);
@@ -309,25 +313,17 @@ function Hero() {
   const hudFillRef   = useRef(null);
   const counterRef   = useRef(null);
   const phaseTextRef = useRef(null);
-  const rafRef       = useRef(null);
+
+  /* Scroll → seek pipeline: coalescing, readiness gate and mobile priming.
+     The choreography (progress → time mapping) stays in this component. */
+  const scrubber = useVideoScrubber(videoRef, { fps: VIDEO_FPS });
 
   useEffect(() => {
-    const video     = videoRef.current;
     const container = containerRef.current;
     const pinned    = pinnedRef.current;
-    if (!video || !container || !pinned) return;
+    if (!container || !pinned) return;
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    /* Prime video frame 0 */
-    let dur = 0;
-    const prime = () => {
-      video.pause();
-      video.currentTime = 0;
-      dur = video.duration || 8;
-    };
-    if (video.readyState >= 1) prime();
-    else video.addEventListener('loadedmetadata', prime, { once: true });
 
     /* Entrance animation */
     if (!reduced) {
@@ -356,20 +352,17 @@ function Hero() {
       onUpdate(self) {
         const p = self.progress;
 
-        /* Seek video with stable dwell at final frame */
+        /* Seek video with stable dwell at final frame — delegated to the
+           scrubber: coalesced seeks, readiness gating, never two in flight.
+           The progress → time mapping is identical to the approved desktop. */
+        const dur = scrubber.getDuration();
         if (dur > 0) {
           const maxVideoTime = Math.max(0, dur - 0.04);
           // Video completes its deconstruction at 92% scroll,
           // remaining stable and steady through 100% for full exploded viewing.
           const videoProgress = Math.min(1, p / 0.92);
           const targetTime = videoProgress * maxVideoTime;
-          if (isFinite(targetTime)) {
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-            rafRef.current = requestAnimationFrame(() => {
-              video.pause();
-              video.currentTime = targetTime;
-            });
-          }
+          if (isFinite(targetTime)) scrubber.setTarget(targetTime);
         }
 
         /* HUD updates */
@@ -413,10 +406,11 @@ function Hero() {
     });
 
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       st.kill();
     };
-  }, []);
+    // `scrubber` is a stable API object (created once), so this effect still
+    // runs a single time — same as the previous `[]` behaviour.
+  }, [scrubber]);
 
   const scrollToNext = (e, targetId) => {
     e?.preventDefault();
@@ -433,6 +427,7 @@ function Hero() {
           ref={videoRef}
           className="hero-video"
           src="/corvette_scroll_5s_scrub.mp4"
+          poster="/corvette_scroll_poster.jpg"
           muted
           playsInline
           preload="auto"

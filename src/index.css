@@ -412,7 +412,6 @@ body {
   z-index: 0;
   pointer-events: none;
   background: #000;
-  will-change: contents;
 }
 
 .hero-overlay {
@@ -2105,9 +2104,8 @@ body {
     letter-spacing: 0.1em;
   }
 
-  /* Hero mobile — poster de espera (frame 0) no lugar da área preta */
-  .hero-pinned-viewport,
-  .hero-video {
+  /* Hero mobile — fundo base no container (evita flash preto antes do poster) */
+  .hero-pinned-viewport {
     background-color: var(--bg-base);
     background-image: url('/corvette_scroll_poster.jpg');
     background-size: cover;
