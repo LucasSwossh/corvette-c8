@@ -516,7 +516,7 @@ function RupturaSection() {
             </div>
           </div>
           <RevealImage
-            src="/hero.jpg"
+            src="/ruptura.png"
             alt="Chevrolet Corvette C8 Stingray — vista três quartos frontal em estúdio"
             direction="right"
             delay={0.25}
@@ -674,7 +674,7 @@ function EngineSection() {
       <div className="container">
         <div className="midengine-layout">
           <RevealImage
-            src="/engine.jpg"
+            src="/lt2.png"
             alt="Motor LT2 6.2L V8 central-traseiro visível sob a tampa traseira do Corvette C8"
             className="midengine-image"
             direction="left"
@@ -777,7 +777,7 @@ function PerformanceSection() {
           </div>
           <div className="perf-visual-composition">
             <RevealImage
-              src="/hero.jpg"
+              src="/performance.png"
               alt="Corvette C8 Stingray em teste dinâmico"
               className="perf-focus-image"
               direction="right"
@@ -852,7 +852,7 @@ function DesignSection() {
       <div className="container">
         <div className="design-layout">
           <RevealImage
-            src="/rear.jpg"
+            src="/aero.png"
             alt="Traseira muscular do Corvette C8 com difusores funcionais e extratores de calor"
             className="design-rear-crop"
             direction="left"
@@ -958,7 +958,7 @@ function CockpitSection() {
             </div>
           </div>
           <RevealImage
-            src="/interior.jpg"
+            src="/cockpit.png"
             alt="Interior refinado do Corvette C8 com bancos esportivos em couro e painel digital voltado ao condutor"
             className="cockpit-image"
             direction="right"
@@ -1051,7 +1051,7 @@ function Z51Section() {
           <div className="z51-focus-display">
             <div className="z51-macro-image">
               <img
-                src="/rear.jpg"
+                src="/z51.png"
                 alt="Detalhe da asa e difusor do Corvette C8 com pacote Z51"
                 loading="lazy"
               />
